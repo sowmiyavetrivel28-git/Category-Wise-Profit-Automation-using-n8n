@@ -58,7 +58,7 @@ Office Supplies : ₹551575
 
 ---
 
-# 🛠 Technologies Used
+#  Technologies Used
 
 - n8n
 - Google Sheets API
