@@ -1,0 +1,137 @@
+{
+  "name": "Category Wise Profit Report",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "370ec399-6036-422c-aeb7-c9f0fd0dbed4",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11Q-c9PvJ0n3crArB0pXSBRO2KhwPnuKefdW8C1Dckxw",
+          "mode": "list",
+          "cachedResultName": "sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Q-c9PvJ0n3crArB0pXSBRO2KhwPnuKefdW8C1Dckxw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Q-c9PvJ0n3crArB0pXSBRO2KhwPnuKefdW8C1Dckxw/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "98c5087d-6fc5-4de9-9e35-a6bd3bc61675",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BsUWJWui6OK8BIuR",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let result = {};\n\nfor (const item of items) {\n  const category = item.json.Category;\n  const profit = Number(item.json.Profit);\n\n  result[category] = (result[category] || 0) + profit;\n}\n\nconst message = `📊 Category Wise Profit\n\nElectronics: ₹${result[\"Electronics\"] || 0}\nOffice Supplies: ₹${result[\"Office Supplies\"] || 0}\nFurniture: ₹${result[\"Furniture\"] || 0}`;\n\nreturn [\n  {\n    json: {\n      message\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "41daf32e-f26a-48f4-bbad-5d8cbbe217ae",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "6161320987",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "5fa2a27d-bfb6-4f6d-bab9-6eb35fd1d95d",
+      "name": "Send a text message",
+      "webhookId": "04726ab1-c1f6-44fd-bf82-34e7ded5cf1b",
+      "credentials": {
+        "telegramApi": {
+          "id": "TFb5JtAx9JPUfPaP",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a400f4f6-fb2f-45e5-9202-24e781473ba2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bb5c9a74c274ef22b91caa460358da0f67fac9847cfe06d1df1c28ccfe805b5e"
+  },
+  "id": "EXhyDZKmS95HmM64",
+  "tags": []
+}
